@@ -12,7 +12,7 @@ import com.sun.imageio.plugins.common.InputStreamAdapter;
 
 public class Mainv3 {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		String trideptrai = "\n@Table(name=\"book\")"
 				+ "\npublic interface Book {"
@@ -34,12 +34,38 @@ public class Mainv3 {
 				+ "\nList<Book> books;"
 				+ "\n}";
 		
-	FileInputStream t = new FileInputStream("/home/bialan132/Public/EclipseFedora/AP_version3/bin/input.txt");
-	Reader reader = new InputStreamReader(t);
+	ArrayList<InterfaceStructure> IL = new ArrayList<>();
 	
-	Parser parser = new Parser();
-	Item  item=parser.parseItem(reader);
-	System.out.println(item.print());
+//	FileInputStream t = new FileInputStream("/home/bialan132/Public/EclipseFedora/AP_version3/bin/input.txt");
+//	Reader reader = new InputStreamReader(t);
+	FileInputStream fis;
+	try {
+		fis = new FileInputStream("/home/bialan132/Public/EclipseFedora/AP_version3/bin/input.txt");
+		
+		
+		System.out.println("Total file size to read (in bytes) : \n"
+				+ fis.available());
+		int content;
+		while ((content = fis.read()) != -1) {
+			// convert to char and display it
+			System.out.print((char) content);
+		}
+
+	} catch (IOException e) {
+		e.printStackTrace();
+	} 
+	System.out.println("\n===========================================================");
+	try {
+		fis = new FileInputStream("/home/bialan132/Public/EclipseFedora/AP_version3/bin/input.txt");
+		Reader reader = new InputStreamReader(fis);
+		Parser parser = new Parser();
+		IL = parser.parseMain(reader);
+//		IL.get(0).
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
 	}
 
 }

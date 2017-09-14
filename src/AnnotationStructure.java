@@ -47,15 +47,19 @@ public class AnnotationStructure {
 	}
 	public void printCodeAnnotations() {
 		// convert Map -> string and concat all keys and values
-		String abc = KeyValues.entrySet().parallelStream().map((entry) -> //stream each entry, map it to string value
-        ""+ entry.getKey() + "=\"" + entry.getValue().replaceAll("\"", "\\\\\"") + "\"")
-        .collect(Collectors.joining(",")); //and 'collect' or put them together by joining
+	//	String abc = KeyValues.entrySet().parallelStream().map((entry) -> //stream each entry, map it to string value
+     //   ""+ entry.getKey() + "=\"" + entry.getValue().replaceAll("\"", "\\\\\"") + "\"")
+      //  .collect(Collectors.joining(",")); //and 'collect' or put them together by joining
 		
+		
+		String abc = KeyValues.entrySet().parallelStream().map(entry -> entry.getKey() + "=\"" + entry.getValue() + "\"").collect(Collectors.joining(","));
 		System.out.print("@"+AnnotationName+"("+abc+")"+"\n");
+		/*
 		if(AnnotationName=="Id") TypeofName = "Integer " + KeyValues.get("name");
 		else if(AnnotationName=="Many2One") TypeofName = KeyValues.get("target") + " " + KeyValues.get("name");
 		else if(AnnotationName=="One2Many") TypeofName = "List<"+ KeyValues.get("target")+ "> " + KeyValues.get("name");
 		else TypeofName = "String " + KeyValues.get("name");
 		System.out.print(TypeofName + ";\n");
+		*/
 	}
 }

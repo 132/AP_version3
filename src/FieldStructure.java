@@ -33,12 +33,14 @@ public class FieldStructure {
 	}
 	public void printField() 
 	{
-		System.out.println("\t" + this.Annotation);
-	//	System.out.println("\t -----------" + this.Type.size()+" =========");
+		this.Annotation.printCodeAnnotations();
+		System.out.println("\t -----------" + this.Type.size()+" =========");
+
 		for(int j=0;j<this.Type.size();j++)
 		{
 			//System.out.print("\t trideptrai =========");
-			System.out.println("\t" + this.Type.get(j).toString());
+			if(this.Type.get(j).checkType())
+				System.out.print(this.Type.get(j).printType() + " ");
 		}
 		
 		System.out.println("\t" + this.Name);

@@ -40,6 +40,7 @@ public class InterfaceStructure {
 		for(int i=0; i<this.Inside.size();i++)
 		{
 			System.out.println("\tFileds  ----------------------------");
+			
 			Inside.get(i).printField();
 		}
 	}
