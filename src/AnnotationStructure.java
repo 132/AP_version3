@@ -45,6 +45,11 @@ public class AnnotationStructure {
 			j++;
 		}
 	}
+	public String getValue(String K)
+	{
+		System.out.println("Key and Values in Annotation: "+ K + " " + this.KeyValues.get(K));
+		return this.KeyValues.get(K);
+	}
 	public void printCodeAnnotations() {
 		// convert Map -> string and concat all keys and values
 	//	String abc = KeyValues.entrySet().parallelStream().map((entry) -> //stream each entry, map it to string value

@@ -1,3 +1,4 @@
+import java.awt.print.Book;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,7 +61,23 @@ public class Mainv3 {
 		Reader reader = new InputStreamReader(fis);
 		Parser parser = new Parser();
 		IL = parser.parseMain(reader);
+		System.out.println("\n===================================================================================");
+
+		System.out.println(IL.size() + " ------------------------------------------------------------------------------");
+		for(int i=0; i<IL.size();i++)
+		{
+			System.out.println(i + " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			IL.get(i).printInterface();
+		}
+		
+		System.out.println("\n===================================================================================");
+		JavaGenerator writeJava= new JavaGenerator(IL);
+		writeJava.printNewType();
+		SQLGenerator writeSQL = new SQLGenerator(IL);
+		writeSQL.printNewType();
 //		IL.get(0).
+		Object abc = new Object();
+ 
 	} catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

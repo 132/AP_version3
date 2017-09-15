@@ -1,9 +1,18 @@
+import java.util.Map;
+
+import jdk.internal.org.objectweb.asm.tree.analysis.Value;
+
+
+/*
+ * 
+ * SQL server/Oracle/MS Access
+ */
 public class Type{ //represents a kind of abstract node derived by no-terminal
 //	Scanner.TOKEN_TYPE type; //symbol(TYPE)
 	String type;
-	public Type(Scanner.TOKEN_TYPE type) 
+	public Type(Scanner.TOKEN_TYPE in) 
 	{
-		this.type=type.toString();
+		this.type = in.toString();
 	}
 	public Type(Type a) 
 	{
@@ -16,7 +25,15 @@ public class Type{ //represents a kind of abstract node derived by no-terminal
 	}
 	public String printType()
 	{
-		return this.type.toString();
+		for(Map.Entry<String, Scanner.TOKEN_TYPE> entry : Scanner.symbol_table.entrySet())
+		{
+			if(this.type.equals(entry.getValue().toString()))
+			{
+				System.out.println("Check printType: "+ entry.getKey());
+				this.type = entry.getKey();
+			}
+		}
+		return this.type;
 	}
 	public Boolean checkType()
 	{
@@ -33,4 +50,16 @@ public class Type{ //represents a kind of abstract node derived by no-terminal
 			return true;
 		return null;
 	}
+	/*
+	public String convertSQLType()
+	{
+		switch (this.type) {
+		case "String": return "VARCHAR";
+		case "Integer": return "INT";
+		case "List": return null;
+		default:
+			return "FOREIGN KEY";
+		}
+	}
+	*/
 }

@@ -34,7 +34,7 @@ public class InterfaceStructure {
 	public void printInterface()
 	{
 		System.out.println("\nInterface  ---------------------------");
-		System.out.println(this.Annotation);
+		this.Annotation.printCodeAnnotations();
 		System.out.println(this.Name);
 		
 		for(int i=0; i<this.Inside.size();i++)

@@ -1,22 +1,80 @@
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 
 public class JavaGenerator {
-
-	public JavaGenerator() {
+	protected ArrayList<InterfaceStructure> data;
+	
+	public JavaGenerator(ArrayList<InterfaceStructure> in) {
+		this.data = in;
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	public void printNewType()
+	{
+		for(InterfaceStructure Inter : this.data)
+		{
+			
+			String NameFile = "src/" + Inter.printName()+".java";
+			System.out.println(NameFile + "==================");
+			ArrayList<FieldStructure> ListofFields = new ArrayList<>(Inter.printField());
+			
+			ArrayList<String> lines = new ArrayList<>();
+			lines.add("");
+			lines.add("public class " + Inter.printName() + "{");
+				
+			for(FieldStructure Field : ListofFields)
+			{
+				ArrayList<Type> type = new ArrayList<Type>(Field.printType());
+				String lineField = "private ";
+				for(int itype=0;itype<type.size();itype++)
+				{
+					if(type.get(itype).printType().equals("List"))
+						lines.set(0, "import java.util.List;" + "\nimport java.util.ArrayList;");
+					lineField += type.get(itype).printType();
+					if(itype+1<type.size())
+						lineField += "<";
+					
+				}
+				// for to close > in type
+				for(int closeBG=0;closeBG<type.size()-1;closeBG++)
+					lineField += ">";
+				lineField += " " + Field.printName() + ";";
+				lines.add(lineField);
+			}
+			lines.add("}\n");
+			//lines = (ArrayList<String>) Arrays.asList(lines);
+			System.out.println(lines.toString());
+			Path file = Paths.get(NameFile);
+			try {
+				Files.write(file, lines, Charset.forName("UTF-8"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
 	/*
-	 * public interface InterfaceItem {
-					public Object getKeyValue();//return the primary key value
-					}
-					method print() inside the following classes represent the code generator
-					public class Item{..
-					public String print(){
+	 * 
+	public interface InterfaceItem {
+		public Object getKeyValue();//return the primary key value
+	}
+	
+	method print() inside the following classes represent the code generator
+	public class Item{..
+		public String print(){
 					//assignments contains list of assignment like "this.att1=att1"
-					while(lista!=null){
-					assignments+="\nthis."+lista.getNome()+" = "+lista.getNome()+";";
-					lista=lista.next();}
-					return "public class "+this.name+" implements InterfaceItem"+
+			while(lista!=null){
+				assignments+="\nthis."+lista.getNome()+" = "+lista.getNome()+";";
+				lista=lista.next();
+			}
+			return "public class "+this.name+" implements InterfaceItem"+
 					//the output will be: public tipo1 att1;public tipo2 att2;...
 					{\npublic "+list_attribute.print().replaceAll(",",";\npublic ")+
 					//the output will be: public name(tipo1 att1,tipo2 att2,..)

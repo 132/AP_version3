@@ -45,5 +45,74 @@ public class FieldStructure {
 		
 		System.out.println("\t" + this.Name);
 	}
+	public String printJAVA()
+	{
+		//import java.util.ArrayList;
+		if(this.Type.size()==1)
+		{
+			switch (Type.get(0).printType()) {
+			case "String": 
+				String len = this.Annotation.getValue("length");
+				if (len.contains(".")) 
+				{
+					return "VARCHAR("+(len.split("\\."))[0]+")";
+				}
+				return "VARCHAR(" + len + ")";
+			case "Integer": 
+				if (this.Annotation.getValue("name").equals("id"))
+					return "INT NOT NULL PRIMARY KEY";
+				else return "INT";
+			default: // not a common type in SQL -> foreign key
+				System.out.println("Check Type in coverting to SQL: "+ Scanner.symbol_table.get(Type.get(0).printType()));
+				System.out.println("Check Type in new things "+ this.Annotation.getValue("target")+ " " + Type.get(0).printType());
+				if(Scanner.symbol_table.get(Type.get(0).printType()).equals(Scanner.TOKEN_TYPE.NEWTYPE) && this.Annotation.getValue("target").equals(Type.get(0).printType()))
+				{
+					String NameTable = Type.get(0).printType();//this.Annotation.getValue("target");
+					return "FOREIGN KEY REFERENCES " + NameTable;
+				}
+				return null;
+					
+			}
+		}
+		else	// One2Many
+		{
+			return null;
+		}
+		
+	}
+	public String printSQL()
+	{
+		// Many2One
+		if(this.Type.size()==1)
+		{
+			switch (Type.get(0).printType()) {
+			case "String": 
+				String len = this.Annotation.getValue("length");
+				if (len.contains(".")) 
+				{
+					return "VARCHAR("+(len.split("\\."))[0]+")";
+				}
+				return "VARCHAR(" + len + ")";
+			case "Integer": 
+				if (this.Annotation.getValue("name").equals("id"))
+					return "INT NOT NULL PRIMARY KEY";
+				else return "INT";
+			default: // not a common type in SQL -> foreign key
+				System.out.println("Check Type in coverting to SQL: "+ Scanner.symbol_table.get(Type.get(0).printType()));
+				System.out.println("Check Type in new things "+ this.Annotation.getValue("target")+ " " + Type.get(0).printType());
+				if(Scanner.symbol_table.get(Type.get(0).printType()).equals(Scanner.TOKEN_TYPE.NEWTYPE) && this.Annotation.getValue("target").equals(Type.get(0).printType()))
+				{
+					String NameTable = Type.get(0).printType();//this.Annotation.getValue("target");
+					return "FOREIGN KEY REFERENCES " + NameTable;
+				}
+				return null;
+					
+			}
+		}
+		else	// One2Many
+		{
+			return null;
+		}
+	}
 	
 }

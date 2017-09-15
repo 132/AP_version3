@@ -58,7 +58,7 @@ public class Parser {
 				
 			else 
 			{
-				System.out.println("Trideptrai ============ 4");
+				System.out.println("Trideptrai ============ 4 " + lookahead);
 				
 				return parseInterfaceList(IL);
 			}
@@ -77,11 +77,13 @@ public class Parser {
 			AnnotationStructure A = new AnnotationStructure(parseAnnotaion());
 			A.printCodeAnnotations();
 			match(Scanner.TOKEN_TYPE.PUBLIC);
-		//	match(Scanner.TOKEN_TYPE.INTERFACE);
+			match(Scanner.TOKEN_TYPE.INTERFACE);
 			expect(Scanner.TOKEN_TYPE.NEWTYPE);
 			String N = (String) scan.getTokenval();
-			Scanner.symbol_table.put(N,Scanner.TOKEN_TYPE.NEWTYPE);
 			match(Scanner.TOKEN_TYPE.NEWTYPE);
+			
+			//Scanner.symbol_table.put(N,Scanner.TOKEN_TYPE.NEWTYPE);
+			System.out.println("Print Name of NEWTYPE: " + N);
 			match(Scanner.TOKEN_TYPE.OPEN_CURLYBRACKET);
 			//the next attributes
 			ArrayList<FieldStructure> F = new ArrayList<>();
@@ -140,25 +142,28 @@ public class Parser {
 			expect(Scanner.TOKEN_TYPE.KEY);
 			
 			String K = (String) scan.getTokenval();
-			System.out.println("Parsing Annotation Next NAME: " + lookahead + " " + K);
+			System.out.println("Parsing Annotation Next KEY: " + lookahead + " " + K);
 			match(Scanner.TOKEN_TYPE.KEY);
+			System.out.println("Parsing Annotation Next ASSIGN: " + lookahead);
 			match(Scanner.TOKEN_TYPE.ASSIGN);
+			System.out.println("Parsing Annotation Next DQUOTE: " + lookahead);
 			match(Scanner.TOKEN_TYPE.DQUOTE);
-			System.out.println("Parsing Annotation Next NAME: " + lookahead);
+			System.out.println("Parsing Annotation Next VALUE: " + lookahead);
 			String V;
 			switch (lookahead) {
 			case NUMBER:
 				
 				expect(Scanner.TOKEN_TYPE.NUMBER);
-				V = (String) String.valueOf(scan.getTokenval());
+				V = (String) scan.getTokenval();
 				System.out.println("Parsing Annotation Next NUMBER: " + lookahead + " " + V);
 				match(Scanner.TOKEN_TYPE.NUMBER);
 				break;
 			case VALUE:
 				
 				expect(Scanner.TOKEN_TYPE.VALUE);
+				
 				V = (String) scan.getTokenval();
-				System.out.println("Parsing Annotation Next NAME: " + lookahead + " " + V);
+				System.out.println("Parsing Annotation Next VALUE: " + lookahead + " " + V);
 				match(Scanner.TOKEN_TYPE.VALUE);
 				break;
 			default:
@@ -291,9 +296,9 @@ public class Parser {
 		case FLOAT: 
 		case DOUBLE:
 		case LIST:	
-			System.out.println("Parsing Type: " + lookahead + " " + scan.getTokenval());
+			System.out.println("Parsing Type1: " + lookahead + " " + scan.getTokenval());
 			match(lookahead);
-			System.out.println("Parsing Type: " + lookahead + " " + scan.getTokenval());
+		//	System.out.println("Parsing Type2: " + lookahead + " " + scan.getTokenval());
 			return new Type(T);
 		default:
 			return new Type(Scanner.TOKEN_TYPE.NULL);

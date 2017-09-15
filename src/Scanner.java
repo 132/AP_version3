@@ -48,7 +48,7 @@ public class Scanner{
 		
 		symbol_table=new Hashtable<String,TOKEN_TYPE>();//load keywords in the symbol
 	//	symbol_table.put("item",TOKEN_TYPE.ITEM);//table for deciding which string
-		symbol_table.put("int",TOKEN_TYPE.INT);//forms a keywords and which one forms.
+//		symbol_table.put("int",TOKEN_TYPE.INT);//forms a keywords and which one forms.
 		symbol_table.put("Integer",TOKEN_TYPE.INT);//forms a keywords and which one forms.
 		symbol_table.put("float",TOKEN_TYPE.FLOAT);//In this way you avoid the
 		symbol_table.put("double",TOKEN_TYPE.DOUBLE);//innapropriate use of keywords
@@ -72,7 +72,11 @@ public class Scanner{
 		try {
 			BackWord = input.sval;
 			int next = input.nextToken();
-			CurrentWord = input.sval;
+			if(input.ttype == StreamTokenizer.TT_WORD)
+					CurrentWord = input.sval;
+			else if(input.ttype == StreamTokenizer.TT_NUMBER)
+					CurrentWord = String.valueOf(input.nval);
+			
 			switch(next)
 			{
 			case StreamTokenizer.TT_EOF: return TOKEN_TYPE.EOF;
@@ -103,10 +107,13 @@ public class Scanner{
 				case StreamTokenizer.TT_WORD:	// after the currernt
 					if(CurrentWord.equals("interface"))
 					{
+						input.pushBack();
 						System.out.println("trideptraivodoi");
+						System.out.println("FrontWord: "+ FrontWord);
 						symbol_table.put(FrontWord, TOKEN_TYPE.NEWTYPE);
-						System.out.println(FrontWord);
-						return (symbol_table.get(FrontWord));
+						
+						System.out.println("Curren: "+ CurrentWord + " FrontWord: " + FrontWord);
+						return (symbol_table.get(CurrentWord));
 					}else
 					{
 						if(symbol_table.get(CurrentWord)==null && symbol_table.get(FrontWord)==null)
@@ -207,9 +214,12 @@ public class Scanner{
 		}
 	}
 	
-	public Object getTokenval() 
+	public String getTokenval() 
 	{//return the value of current token
-		if(input.ttype==StreamTokenizer.TT_NUMBER) return this.CurrentWord;
-		else return this.CurrentWord;
+//		if(input.ttype==StreamTokenizer.TT_NUMBER) return this.CurrentWord;
+//	//	else if (input.ttype==StreamTokenizer.TT_WORD && this.CurrentWord.equals("interface"))
+//	//		return this.FrontWord;
+//		else return this.CurrentWord;
+		return this.CurrentWord;
 	}
 }
