@@ -1,29 +1,37 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.swing.table.TableColumn;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.lang.reflect.Type;
 import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 
+import com.mysql.jdbc.PreparedStatement;
 import com.sun.org.apache.bcel.internal.classfile.Field;
 
 
 
-public class IEntityManagerClass<T> implements IEntityManager<T> {
+public class IEntityManagerClass<T> implements IEntityManager<T>{
 
-	private Class<T> type;
+	protected Class<T> type;
 	
-	public IEntityManagerClass(T objectInstance){//Object value = field.get(objectInstance);
-		
+	public IEntityManagerClass(Class<?> tem)
+	{
+		this.type = (Class<T>) tem;
+		System.out.println(type.getName() + " Value of Class let check it out");
 	}
-	
-	public <T> IEntityManagerClass(){
-		this.type = T;
-	}
-	public IEntityManagerClass(Collection<?> c){		
+
+	public IEntityManagerClass(){		
 	}
 /*	public Class<T> getTypeParameterClass()
     {
@@ -135,26 +143,25 @@ public class IEntityManagerClass<T> implements IEntityManager<T> {
 	@Override
 	public T find(Object primaryKey) {
 		// TODO Auto-generated method stub
-		File file = new File("SQLGenerator.sql");
+	//	File file = new File("SQLGenerator.sql");
 		
-		System.out.println(this.getClass());
+	/*	System.out.println(this.getClass());
 		Type genericType = this.getClass().getGenericSuperclass();
 		System.out.println(genericType);          
-
 		
-	//	System.out.println(this.getTypeParameterClass());
-			
-	
-		StringBuilder sb = new StringBuilder();
 	    Class<?> thisClass = null;
+	    */
 	  //   thisMethod = null;
-	    try {
-	    	file.createNewFile();
-			FileWriter writer = new FileWriter(file,true); 
-			
-			
-			parameterized t1 = this.getClass().
-			
+		
+		T out = null;
+	    try { 
+	    	out = type.newInstance();
+	    	System.out.println(out.getClass().getSimpleName());
+	    	Connection connection = DriverManager.getConnection(SecondMain.url, SecondMain.username, SecondMain.password);
+	   // 	file.createNewFile();
+		//	FileWriter writer = new FileWriter(file,true); 
+		//	thisClass = Class.forName(this.getClass().getName());
+			/*
 	        //thisClass = Class.forName(this.getClass().getName());
 	        Method ListMethod[] = this.getClass().getMethods();	
 	        Method thisMethod = null;
@@ -164,50 +171,59 @@ public class IEntityManagerClass<T> implements IEntityManager<T> {
 	        System.out.println(thisMethod);
 	        ParameterizedType returnType = null;//this.getClass().getGenericSuperclass();
 	        	System.out.println(returnType);
-	        
-	        //ParameterizedType myListType = ((ParameterizedType) this.class.getDeclaredField("find".getGenericType());
-	        //java.lang.reflect.Field[] aClassFields = thisMethod.getClass().getDeclaredFields();
-	 //      sb.append("SELECT * FROM " + returnType.getClass().getSimpleName() + " WHERE ");
-	        System.out.println(sb);
-	  /*      for(java.lang.reflect.Field f : aClassFields){
-	            			//System.out.println("Field: " + fName);
-	            			//sb.append("(" + f.getType() + ") " + fName + " = " + f.get(entity) + ", ");
-	           
-	            if(f.get(entity)!= null) 
-	            {
-	            	System.out.println(f.getType().getSimpleName());
-		            if(f.getType().getSimpleName().equals("String"))
-	            	{
-		            	if(f==aClassFields[aClassFields.length-1]) sb.append(f.get(entity));
-		            	else  sb.append("\'" + f.get(entity) + "\'"   + ", ");
-	            	}// in case Else it because we will reference to other tables -> the id of those tables => these will be Integer
-		            else if(f.getType().getSimpleName().equals("Integer"))
-		            {
-		            	if(f==aClassFields[aClassFields.length-1]) sb.append(f.get(entity));
-		            	else sb.append(f.get(entity) + ", ");
-		            }else
-		            {
-		            //	Class<?> thisClass2 = Class.forName(f.getName());
-		    	        java.lang.reflect.Field[] aClassFields2 = f.getType().getDeclaredFields();
-		    	        for(java.lang.reflect.Field f2 : aClassFields2)
-		    	        	if(f2.getName().equals("id"))
-		    	        		sb.append(f2.get(f.get(entity)));
-		            }
-				      //for(String f: lines)
-				    
-	            }
-	            else sb.append("NULL");
-	      	  
-	        }*/
-	        sb.append(");");
-	        writer.write("\n" + sb.toString());
-	        writer.flush();
-	        writer.close();
+	        	*/
+			
+			String q = ("SELECT * FROM " + type.getName().toLowerCase() + " WHERE id = " + primaryKey + ";");
+			
+			System.out.println(q);
+			java.sql.PreparedStatement st = connection.prepareStatement(q);
+			ResultSet result = st.executeQuery();
+			ResultSetMetaData metaData = result.getMetaData();
+			if(result.next())
+			{
+				java.lang.reflect.Field[] ListFields = type.getDeclaredFields();
+				System.out.println(type.getName());
+
+				for(int icol=1; icol<= metaData.getColumnCount(); icol++)
+				{
+					System.out.println(result.getString(2));
+					System.out.println(ListFields[icol-1].getType().getSimpleName());
+					System.out.println(metaData.getColumnTypeName(icol));
+					if((ListFields[icol-1].getType().getSimpleName().equals("Integer") && metaData.getColumnTypeName(icol).equals("INT")) || (ListFields[icol-1].getType().getSimpleName().equals("String") && metaData.getColumnTypeName(icol).equals("VARCHAR")))
+					{
+						System.out.println("in side ..........");
+						ListFields[icol-1].set(out,result.getObject(icol));
+					}
+					else if(metaData.getColumnTypeName(icol).toString().toUpperCase().equals("INT"))
+					{
+						System.out.println(result.getObject(icol) + "=======");
+						Class<?> tem = ListFields[icol-1].getType();
+						Class B = Class.forName(tem.getName());
+						System.out.println(tem.getName());
+						
+						IEntityManagerClass<T> a = new IEntityManagerClass<T>(tem);
+
+						ListFields[icol-1].set(out,a.find(result.getObject(icol)));
+						
+					}
+				}
+			}
+	//        writer.write(sb.toString());
+	 //       writer.flush();
+	  //      writer.close();
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
+	    return (T) out;
+	}
 
-	    System.out.println(sb.toString());	
-	    return null;
+
+	@Override
+	public Query<T> createQuery(String query) {
+		// return data from Query SQL
+		Query<T> out = new Query<>(query);
+		
+		// TODO Auto-generated method stub
+		return out;
 	}
 }

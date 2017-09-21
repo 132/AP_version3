@@ -39,7 +39,7 @@ public class JavaGenerator {
 			System.out.println(NameFile + "==================");
 			ArrayList<String> lines = new ArrayList<>();
 			lines.add("");
-			lines.add("public class " + Inter.printName() + "{");
+			lines.add("public class " + Inter.printName() + " extends Publisher {");		// extends because I call Publisher
 			lines.add("}");
 			Path file = Paths.get(NameFile);
 /*			try {
