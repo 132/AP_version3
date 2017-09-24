@@ -4,14 +4,9 @@ public class Publisher{
 protected Integer id;
 protected String name;
 protected List<Book> books;
+public Publisher(){}
 public Publisher(Integer id_temp,String name_temp,List<Book> books_temp){
 this.id =id_temp;
 this.name =name_temp;
 this.books =books_temp;
-}
-public Publisher() {}
-public Class returnClass() {
-	// TODO Auto-generated method stub
-	return this.getClass();
-}
-}
+}}

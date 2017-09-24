@@ -66,12 +66,67 @@ public class SecondMain {
 			    System.out.println(actualType + " >>>>>>>>>>>>>>>>>>>>>");
 			}
 			*/
+			System.out.println("================================= Find Method ==================================");
+			Publisher pu2 = pu.find(1);
+			//Book tri_2 = bo.find(1);
+			System.out.println(pu2.id + " Publisher ne: " + pu2.books.size());
+			for(int i=0; i < pu2.books.size(); i++)
+			{
+				System.out.println(i);
+				System.out.println(pu2.books.get(i).title);// + " " + pu2.books.get(i).publisher.id);
+				System.out.println(pu2.books.get(i).publisher.name);
+			}
+			
+			
 			Book tri_2 = bo.find(1);
+			System.out.println(tri_2.id + " Publisher ne: " + tri_2.publisher.name);
+			System.out.println("================================= List Query ==================================");
+			//bo.createQuery("SELECT * FROM book;");
+			List<Book> ex = bo.createQuery("Select * from book;").getResultList();
 			
-			System.out.println(tri_2.id + " " + tri_2.title + " " + tri_2.publisher.name);
+			for(SupClass a : ex)
+			{
+				Book b = (Book) BookClass.cast(a);
+				System.out.println(b.title);
+			}
 			
+			//   List Publisher
+			List<Publisher> ex2 = pu.createQuery("Select * from publisher;").getResultList();
+			
+			for(SupClass a : ex2)
+			{
+				Publisher b = (Publisher) PublisherClass.cast(a);
+				System.out.println(b.name);
+			}
+			
+			pu.createQuery("delete from publisher where id = 2").execute();
+			
+			
+			//System.out.println(tri_2.id + " " + tri_2.title + " " + tri_2.publisher.name);
+	/*		
 		    bo.createQuery("SELECT * FROM book;");
 		    Statement stmt; 
+		    
+		    
+		    
+		//	Class BookClass = Class.forName("Book");
+			SupClass entity = (SupClass) BookClass.newInstance();
+			IEntityManagerClass<SupClass> book_ = new IEntityManagerClass<SupClass>(BookClass);
+			
+			SupClass re = book_.find(3);
+		    Book out = (Book) re;
+			System.out.println(out.title);
+			
+	//		List<SupClass> ex = book_.createQuery("Select * from book;").getResultList();
+		
+			for(SupClass a : ex)
+			{
+				Book b = (Book) BookClass.cast(a);
+				System.out.println(b.title);
+			}
+			
+			*/	
+			
 			
 //		    stmt = connection.createStatement();
 		    

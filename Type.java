@@ -31,6 +31,7 @@ public class Type{ //represents a kind of abstract node derived by no-terminal
 			{
 				System.out.println("Check printType: "+ entry.getKey());
 				this.type = entry.getKey();
+				break;
 			}
 		}
 		return this.type;

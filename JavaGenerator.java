@@ -39,7 +39,7 @@ public class JavaGenerator {
 			System.out.println(NameFile + "==================");
 			ArrayList<String> lines = new ArrayList<>();
 			lines.add("");
-			lines.add("public class " + Inter.printName() + " extends Publisher {");		// extends because I call Publisher
+			lines.add("public class " + Inter.printName() + "{");		// extends because I call Publisher
 			lines.add("}");
 			Path file = Paths.get(NameFile);
 /*			try {
@@ -106,11 +106,16 @@ public class JavaGenerator {
 				String lineField = "protected ";
 				for(int itype=0;itype<type.size();itype++)
 				{
+				
 					if(type.get(itype).printType().equals("List"))
 					{
 						lines.set(0, "import java.util.List;" + "\nimport java.util.ArrayList;");
 					}
 					
+					System.out.println(type.get(itype).printType() + " ----------------------------------------------------");
+					
+					if(Scanner.symbol_table.get(type.get(itype).printType().toString()).equals(Scanner.TOKEN_TYPE.NEWTYPE) && type.size()==1)
+						lines.set(1,"public class " + Inter.printName() + " extends " + type.get(itype).printType().toString() +" implements SupClass{");
 					lineField += type.get(itype).printType();
 					linesConstructor += type.get(itype).printType();
 					
@@ -128,14 +133,15 @@ public class JavaGenerator {
 				}
 				lineField += " " + Field.printName() + ";";
 				
-				
 				lines.add(lineField);
+				
 				if (ListofFields.get(ListofFields.size()-1).equals(Field))
 					linesConstructor += " " + Field.printName() + "_temp";
 				else	linesConstructor += " " + Field.printName() + "_temp,";
 				Constructor.add("this." +Field.printName()+ " =" + Field.printName()+"_temp;");
 			}
 			//lines.add("}\n");
+			lines.add("public " + Inter.printName() + "(){}");
 			linesConstructor += "){";
 			Constructor.add("}}");
 			Constructor.set(0, linesConstructor);

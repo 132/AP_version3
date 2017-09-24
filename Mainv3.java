@@ -212,7 +212,7 @@ public class Mainv3 {
 	         
 	                for(int i=0; i< urls.length; i++)
 	                {
-	                    System.out.println(urls[i].getFile());
+	                    System.out.println(urls[i].getFile() + ".........................");
 	                }       
 	                File compileFile = new File("src/" + in.printName() + ".class");
 	                compileFile.renameTo(new File("bin/"+ in.printName() + ".class"));
@@ -242,7 +242,13 @@ public class Mainv3 {
 	        }
 			
 		
-	
+		
+		//  ============================================= EX 4 ===========================================
+			Class BookClass = Class.forName("Book");
+			SupClass entity = (SupClass) BookClass.newInstance();
+			IEntityManagerClass<SupClass> book_ = new IEntityManagerClass<SupClass>(BookClass);
+			String q = "";
+			book_.persist(entity);
 /*
  * '
 			try {
@@ -285,14 +291,24 @@ public class Mainv3 {
 			// Second Main
 			System.out.println("\n===================== Complete Generator ========================\n");
 
-	/*		try {
-		//		runProcess("javac -cp . /home/bialan132/Public/EclipseFedora/AP_version3/src/SecondMain.java");
-		//		runProcess("java -cp /home/bialan132/Public/EclipseFedora/AP_version3/src SecondMain");
+			try {
+				
+				 java.lang.ClassLoader sysClassLoader = ClassLoader.getSystemClassLoader();
+	                
+	                //Get the URLs
+	                URL[] urls = ((URLClassLoader)sysClassLoader).getURLs();
+	         
+	                for(int i=0; i< urls.length; i++)
+	                {
+	                    System.out.println(urls[i].getFile() + ".........................");
+	                } 
+				//runProcess("javac -classpath . /../src/SecondMain.java");
+			//	runProcess("java -cp /home/bialan132/Public/EclipseFedora/AP_version3/src SecondMain");
 			} catch (Exception e) 
 			{
 				e.printStackTrace();
 			}
-	 */
+	 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

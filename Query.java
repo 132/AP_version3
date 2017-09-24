@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Query<T> implements IQuery<T> {
-	
+	private Class<T> typeOfClass;
 	private String query;
-	private Class typeOfClass;
-	protected Query(String q) {
+	protected Query(String q, Class<T> A) {
 		this.query = q;
+		this.typeOfClass = A;
 	//	this.typeOfClass = T.getClass();
 	}
 
@@ -28,11 +28,35 @@ public class Query<T> implements IQuery<T> {
 		List<T> out = new ArrayList<T>();
 
 		
-		ResultSet result;
+		//ResultSet result;
 		 
-		try 
-		{
-			IEntityManagerClass<T> newElem = new IEntityManagerClass<>();
+	//	try 
+	//	{
+			IEntityManagerClass<T> retr = new IEntityManagerClass<T>(typeOfClass);
+			try {
+				Connection connection = DriverManager.getConnection(SecondMain.url, SecondMain.username, SecondMain.password);
+				String q = ("SELECT * FROM " + typeOfClass.getName().toLowerCase() + ";");
+				
+				System.out.println(q);
+				java.sql.PreparedStatement st = connection.prepareStatement(q);
+				ResultSet result = st.executeQuery();
+				ResultSetMetaData metaData = result.getMetaData();
+				while(result.next())
+				{
+					out.add(retr.find(result.getObject(1)));
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		/*	int K = 1;
+			while(retr.find(K)!=null)
+			{
+				out.add(retr.find(K));
+				K++;
+			}
+			*/
 		//	out.add(newElem.find());
 		/*	Statement stmt;
 			Class ThisClass = Class.forName(typeOfClass.getName());
@@ -83,10 +107,10 @@ public class Query<T> implements IQuery<T> {
 		    * 
 		    */
 			
-		} catch (SQLException e) {
+//		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//	e.printStackTrace();
+		//}
 	   
 		return out;
 	}
