@@ -1,4 +1,4 @@
-
+	
 %%%%%%%%%%%%%%%%%%%%%%% file typeinst.tex %%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % This is the LaTeX source for the instructions to authors using
@@ -25,7 +25,7 @@
 \usepackage{listings}
 
 \usepackage{courier}
-
+\usepackage{hyperref}
 
 \usepackage{sectsty}
 
@@ -139,12 +139,13 @@ public ArrayList<FdStr> printField(){return this.Inside;}
 \label{ScannerClass}
 \begin{lstlisting}[numbers=left,language=Java,frame=single,breaklines=true,label=Code:ReadGraph, caption=Scanner Class.]
 public class Scanner{
-public enum TKT {INTERFACE,LIST,PUBLIC,AT,KEY,VALUE,ASSIGN,COMMA,NEWTYPE,NULL,DQUOTE,SEMICOLON,OPEN_CURLYBRACKET,CLOSE_CURLYBRACKET,OPEN_BRACKET,CLOSE_BRACKET,INT,STRING,EOF,EOA,NO_T,BG,LS,NAME,NUMBER,};
-protected static Hashtable<String,TKT> sb=new Hashtable<String,TKT>();
 private String BackWord;
 private String CurrentWord;
 private String FrontWord;
 private StreamTokenizer addNew;	
+public enum TKT {INTERFACE,LIST,PUBLIC,AT,KEY,VALUE,ASSIGN,COMMA,NEWTYPE,NULL,DQUOTE,SEMICOLON,OPEN_CURLYBRACKET,CLOSE_CURLYBRACKET,OPEN_BRACKET,CLOSE_BRACKET,INT,STRING,EOF,EOA,NO_T,BG,LS,NAME,NUMBER,};
+protected static Hashtable<String,TKT> sb=new Hashtable<String,TKT>();
+public String getTokenval(){return this.CurrentWord;}
 public Scanner(Reader read){
  addNew = new StreamTokenizer(read);
  addNew.wordChars('a','z');      addNew.wordChars('A', 'Z'); 
@@ -198,9 +199,7 @@ public TKT nextToken(){
   default : return TKT.NO_T; 
   }
  } catch (IOException e){e.printStackTrace();return TKT.EOF;}
-}
-public String getTokenval(){return this.CurrentWord;}
-}
+}}
 \end{lstlisting}
 \label{ParserClass}
 \begin{lstlisting}[numbers=left,language=Java,frame=single,breaklines=true,label=Code:Mutual, caption=Parser Class.]
@@ -627,11 +626,97 @@ public void execute() {
 \end{lstlisting}
 \section{Exercise 6.}
 \label{Second}
+%Explain what is an Object-Relational Mapping 
+%https://en.wikipedia.org/wiki/Object-relational_mapping
+Object-Relational Mapping (ORM) is a programming technique for converting or transforming data between Object-Oriented programming language and incompatible type systems based on a ``virtual object database''. There are two packages free and commercial [1].
+%https://stackoverflow.com/questions/1152299/what-is-an-object-relational-mapping-framework
+That means it can hide the SQL in the code and the database can be easily accessed. Therefore, instead of accessing directly SQL server to retrieve a query and process data, ORM interacts through programming languages. Obviously, it is more readable and fewer errors (reducing the amount of code and make the software more robust). The example below shows the interaction of ORM in Java.
+\begin{lstlisting}[numbers=left,language=Java,frame=single,breaklines=true,label=Code:vd1, caption=Example of retrieving data from mySQL by Java.]
+String query = "SELECT * FROM book WHERE id = 10";
+java.sql.PreparedStatement st = connection.prepareStatement(query);
+ResultSet result = st.executeQuery();
+String title = result.next().getString("title");
+\end{lstlisting}
+\begin{lstlisting}[numbers=left,language=Java,frame=single,breaklines=true,label=Code:vd2, caption=Example of retrieving data based on ORM.]
+Book b = IEntityManagerClass.find(10);
+String title = b.gettitle();
+\end{lstlisting}
 
-Explain what is an Object-Relational Mapping and discuss and compare Linq and JPA as techniques to facilitate access  to  data  in  databases.
-In  particular  compare  the  expressiveness  of  logical  operator  available  in  Linq  with respect to those of SQL based ORMs
+%and discuss and compare Linq and JPA as techniques to facilitate access  to  data  in  databases.
+%In  particular  compare  the  expressiveness  of  logical  operator  available  in  Linq  with respect to those of SQL based ORMs
+%https://en.wikipedia.org/wiki/Java_Persistence_API
+ 
+%https://openjpa.apache.org/builds/1.0.1/apache-openjpa-1.0.1/docs/manual/jpa_overview_query.html
+The Java Persistence API (JPA) being a specification for the persistence of Java objects is designed by Sun Microsystems. this API requires J2SE 1.5 ($\geqslant$ Java5), as it makes heavy use in features of Java programming language including annotations and generics [3]. For instance, with retrieving information from table Magazine, the code below can illustrate the way of the API.
 
-\bibliography{Ref}
-\bibliographystyle{plain}
+\noindent
+EntityManager em = ...\\
+Query q = em.createQuery(``SELECT x FROM Magazine x");\\
+List$<Magazine>$ results = (List$<Magazine>$) q.getResultList();
+
+The = operator tests for equality. $<>$ tests for inequality. JPQL also supports the following arithmetic operators for numeric 
+comparisons: $>, >=, <, <=$.
+The AND, OR and NOT logical operators chain multiple criteria together [3]:
+
+\noindent
+AND: SELECT x FROM Magazine x WHERE x.p $>$ 3 AND x.p $<$5 \\
+OR : SELECT x FROM Magazine x WHERE x.t = 'a' OR x.t = 'b'\\
+NOT: SELECT x FROM Magazine x WHERE NOT(x.p = 10)
+%IN: SELECT x FROM Mag x WHERE x.t IN ('JDJ','Java','IT Ir')
+
+LINQ simplifies the expression (retrieving data) by offering a consistent model. Thus, it support working with data across various types and formats. In the query, Linq works with objects and requires basic code to query and covert data from XML, SQL or ADO.NET and any other [4]. For example, the logical operators of Linq in C\# is represented below [5].
+
+\noindent
+AND (\&\&): var links = links.Where(l $\Rightarrow$ l.First()==`/' \&\& l.First()==`//').ToList();\\
+OR ($||$): var links = links.Where(l $\Rightarrow$ l.First()==`/' $||$ l.First()==`//').ToList(); \\
+NOT (!) : var query = from item in context.items where !ids.Contains(item.id) select item;
+%IN: var query = from item in context.items where ids.Contains(item.id) select item;\\
+
+After these examples, it can be said that the query of JPA from Java is more similar to the SQL shema query than queries of Linq from C\#. However, the Linq is utilized the anonymous function or lambda expression and close to the programming language (for instance, using some symbols such as \&\& and $||$).
+%\begin{table}[!htbp]
+%\centering
+%\caption{Logical operators between JPA.}
+%\label{JPA}
+%\begin{tabular}{l|l|c}
+%Logic\\Operators & JPA  & Linq \\ \hline \hline
+%AND     & SELECT x FROM Mag x WHERE x.p$>$3 AND x.p$<$5&  \\
+%OR      & SELECT x FROM Mag x WHERE x.t='a' OR x.t='b'&  \\
+%%BETWEEN & SELECT x FROM Mag x WHERE x.p BETWEEN 3 AND 5& 	\\ 
+%%%MPTY   & SELECT x FROM Mag x WHERE x.t is empty& 	\\ 
+%NULL    & SELECT x FROM Mag x WHERE x.p is null& 	\\ \
+%NOT     & SELECT x FROM Mag x WHERE NOT(x.p = 10)& 	\\ \hline\hline
+%\end{tabular}
+%\end{table}
+
+%\begin{table}[!htbp]
+%\centering
+%\caption{Logical operators between Linq.}
+%\label{Linq}
+%\begin{tabular}{l|l|c}
+%Logic\\Operators & Linq  & Linq \\ \hline \hline
+%AND(\&\&)& var links = links.Where(l => l.First()=='/' \&\& l.First()=='//').ToList();&  \\
+%OR($\||$)& var links = links.Where(l => l.First()=='/' $||$ l.First()=='//').ToList();&  \\
+%NOT(!) & var query = from item in context.items where !ids.Contains(item.id) select item;& 	\\ 
+%IN     & var query = from item in context.items where ids.Contains(item.id) select item;& 	\\ \hline\hline
+%\end{tabular}
+%\end{table}
+%AND (&&) 
+%NOT (!)
+%OR (||) var links = links.Where(l => l.First() == '/'|| l.First() == '//').ToList();
+%IN (in)var query = from item in context.items where ids.Contains( item.id ) select item;
+%== var companyNameQuery =  from cust in nw.Customers where cust.City == "London" select cust.CompanyName;
+
+
+%https://msdn.microsoft.com/en-us/library/bb425822.aspx#linqtosql_topic13
+
+\section{Reference}
+\begin{enumerate}
+
+\item \url{https://en.wikipedia.org/wiki/Object-relational_mapping} - Access 27 Sep 2017
+\item \url{https://stackoverflow.com/questions/1152299/} - Access 27 Sep 2017
+\item \url{https://openjpa.apache.org/builds/1.0.1/apache-openjpa-1.0.1/docs/manual/jpa_overview_query.html} - Access 27 Sep 2017
+\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/introduction-to-linq-queries} - Access 27 Sep 2017
+\item \url{https://stackoverflow.com/questions/18765161/using-or-in-linq-expressions} - Access 27 Sep 2017
+\end{enumerate}
 
 \end{document}
